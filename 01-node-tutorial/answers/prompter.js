@@ -21,19 +21,53 @@ const getBody = (req, callback) => {
 };
 
 // here, you could declare one or more variables to store what comes back from the form.
-let item = "Enter something below.";
+let selectLabel = "Choose your favorite fruit.";
+let apple = "Apple";
+let peach = "Peach";
+let orange = "Orange";
+let banana = "Banana";
+let grape = "Grape";
 
 // here, you can change the form below to modify the input fields and what is displayed.
 // This is just ordinary html with string interpolation.
-const form = () => {
+const form = (selectedFruit = "") => {
+  //const background = fruitColor[selectedFruit] || "pink";
   return `
+  <head>
+    <script>
+      function changeBackgroundColor() {
+        const fruitForm = document.getElementById('fruitForm');
+        const selectedFruit = document.getElementById('fruits').value;
+        let backgroundColor;
+
+        switch (selectedFruit) {
+          case 'apple': backgroundColor = 'lightgreen'; break;
+          case 'peach': backgroundColor = 'coral'; break;
+          case 'orange': backgroundColor = 'orange'; break;
+          case 'banana': backgroundColor = 'yellow'; break;
+          case 'grape': backgroundColor = 'lavender'; break;
+          default: backgroundColor = 'white'; break;
+        }
+
+        fruitForm.style.backgroundColor = backgroundColor;
+      }
+    </script>
+  </head>
   <body>
-  <p>${item}</p>
-  <form method="POST">
-  <input name="item"></input>
-  <button type="submit">Submit</button>
-  </form>
+    <form id="fruitForm" method="POST">
+      <label for="fruits">${selectLabel}</label>
+      <select id="fruits" name="fruits" onchange="changeBackgroundColor()">
+        <option value="empty">${selectedFruit}</option>
+        <option value="apple">${apple}</option>
+        <option value="peach">${peach}</option>
+        <option value="orange">${orange}</option>
+        <option value="banana">${banana}</option>
+        <option value="grape">${grape}</option>
+      </select>
+      <button type="submit">Submit</button>
+    </form>
   </body>
+  </html>
   `;
 };
 
@@ -44,11 +78,8 @@ const server = http.createServer((req, res) => {
     getBody(req, (body) => {
       console.log("The body of the post is ", body);
       // here, you can add your own logic
-      if (body["item"]) {
-        item = body["item"];
-      } else {
-        item = "Nothing was entered.";
-      }
+      let item = body["fruits"] ? body["fruits"] : "Nothing was selected.";
+      console.log("Selected fruit:", item);
       // Your code changes would end here
       res.writeHead(303, {
         Location: "/",
