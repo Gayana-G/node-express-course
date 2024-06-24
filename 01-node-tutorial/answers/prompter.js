@@ -21,7 +21,7 @@ const getBody = (req, callback) => {
 };
 
 // here, you could declare one or more variables to store what comes back from the form.
-let selectLabel = "Choose your favorite fruit.";
+let selectLabel = "Choose your favorite fruit right now.";
 let apple = "Apple";
 let peach = "Peach";
 let orange = "Orange";
@@ -89,6 +89,10 @@ const server = http.createServer((req, res) => {
   } else {
     res.end(form());
   }
+});
+
+server.on("request", (req) => {
+  console.log("event received: ", req.method, req.url);
 });
 
 server.listen(3000);
